@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TIGERCAT • Golden Bengal Mint</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root { --orange-glow: #ff4500; --teal-glow: #00f5d4; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #000; color: #fff; }
+    .glow-orange { text-shadow: 0 0 25px var(--orange-glow); }
+    .glow-teal { text-shadow: 0 0 25px var(--teal-glow); }
+    .mint-card { transition: all 0.4s; }
+    .mint-card:hover { transform: scale(1.03); box-shadow: 0 0 40px rgba(0,245,212,0.4); }
+  </style>
+</head>
+<body>
+
+<!-- SAME NAVBAR AS MAIN SITE -->
+<nav class="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-zinc-800">
+  <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+    <a href="index.html" class="flex items-center gap-3">
+      <img src="assets/logo.png" alt="TIGERCAT" class="w-10 h-10 rounded-full border-2 border-orange-600">
+      <span class="text-2xl font-black tracking-tight glow-orange">TIGERCAT</span>
+    </a>
+    <div class="hidden md:flex gap-10 text-lg font-medium">
+      <a href="index.html#about" class="hover:text-orange-400">About</a>
+      <a href="index.html#buy" class="hover:text-orange-400">Buy</a>
+      <a href="index.html#nfts" class="hover:text-teal-400">NFTs</a>
+      <a href="mint.html" class="text-teal-400 font-bold">Golden Bengal Mint</a>
+      <a href="index.html#community" class="hover:text-orange-400">Community</a>
+    </div>
+    <a href="index.html#buy" class="bg-gradient-to-r from-orange-600 to-red-600 px-8 py-3 rounded-full font-bold">BUY $TCAT</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black flex items-center justify-center text-center pt-20">
+  <div class="max-w-4xl px-6">
+    <h1 class="text-6xl md:text-8xl font-black glow-teal mb-6">GOLDEN BENGAL MINT</h1>
+    <p class="text-3xl text-orange-400 mb-12">Premium Golden Glow Edition • TIGERCAT NFT Collection</p>
+    <div class="bg-zinc-900/70 backdrop-blur-lg rounded-3xl p-12 max-w-2xl mx-auto border border-teal-500/30">
+      <div id="wallet-status" class="mb-8 text-lg">
+        <button onclick="connectWallet()" id="connect-btn" class="bg-teal-500 hover:bg-teal-600 px-10 py-4 rounded-full font-bold text-xl transition">
+          CONNECT PHANTOM WALLET
+        </button>
+      </div>
+
+      <div class="space-y-8">
+        <div>
+          <label class="block text-sm opacity-75 mb-2">Edition</label>
+          <select id="edition" class="w-full bg-black p-4 rounded-xl text-lg border border-teal-500/50">
+            <option>Golden Bengal Glow (Rare)</option>
+            <option>Fiery Bengal Hybrid</option>
+            <option>Cosmic Bengal Explorer</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm opacity-75 mb-2">Quantity (max 3 per wallet)</label>
+          <input type="number" id="quantity" value="1" min="1" max="3" class="w-full bg-black p-4 rounded-xl text-3xl text-center border border-teal-500/50">
+        </div>
+
+        <div class="text-2xl">
+          Total: <span id="total-price" class="font-bold text-orange-400">0.5 SOL</span>
+        </div>
+
+        <button onclick="mintNFT()" id="mint-btn" class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 py-6 rounded-2xl text-3xl font-bold transition disabled:opacity-50">
+          MINT NOW
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUCCESS MODAL (hidden by default) -->
+<div id="success-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 rounded-3xl p-12 max-w-md text-center">
+    <i class="fas fa-check-circle text-6xl text-teal-400 mb-6"></i>
+    <h2 class="text-4xl font-bold mb-4">MINT SUCCESSFUL!</h2>
+    <p class="text-xl mb-8">Your Golden Bengal NFT has been minted.</p>
+    <p class="font-mono text-sm opacity-75 mb-8" id="fake-tx">Transaction: 8xY...kPq9</p>
+    <button onclick="closeModal()" class="bg-teal-500 text-black px-12 py-4 rounded-full font-bold">VIEW IN WALLET</button>
+  </div>
+</div>
+
+<script>
+  let connected = false;
+  function connectWallet() {
+    if (!connected) {
+      document.getElementById('connect-btn').innerHTML = '✅ CONNECTED • 0x7a...9kPq';
+      connected = true;
+    }
+  }
+
+  function mintNFT() {
+    if (!connected) {
+      alert("Please connect your Phantom wallet first!");
+      return;
+    }
+    const btn = document.getElementById('mint-btn');
+    btn.disabled = true;
+    btn.innerHTML = 'MINTING... <i class="fas fa-spinner fa-spin"></i>';
+
+    setTimeout(() => {
+      document.getElementById('success-modal').classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerHTML = 'MINT NOW';
+    }, 2200);
+  }
+
+  function closeModal() {
+    document.getElementById('success-modal').classList.add('hidden');
+  }
+
+  // Live price update
+  document.getElementById('quantity').addEventListener('input', function() {
+    const qty = parseInt(this.value) || 1;
+    document.getElementById('total-price').textContent = (qty * 0.5).toFixed(1) + ' SOL';
+  });
+</script>
+</body>
+</html>
